@@ -1,4 +1,18 @@
-local VorpCore = {}
+
+    -- Detect framework
+    local Framework = Config.framework
+    local CoreObject = nil
+
+    if Framework == 'lxr-core' then
+        CoreObject = exports['lxr-core']:GetCoreObject()
+    elseif Framework == 'qbr-core' then
+        CoreObject = exports['qbr-core']:GetCoreObject()
+    elseif Framework == 'rsg-core' then
+        CoreObject = exports['rsg-core']:GetCoreObject()
+    else
+        print("Unsupported framework, please set Config.framework correctly.")
+    end
+    
 local AlertsGroups = {}
 
 TriggerEvent("getCore",function(core)
@@ -29,7 +43,7 @@ function AlertPlayer(src, alert)
         for key, jg in pairs(alert.jobgrade[job]) do
             if AlertsGroups[job] and AlertsGroups[job][tostring(jg)] then
                 for K, person in pairs(AlertsGroups[job][tostring(jg)]) do
-                    TriggerClientEvent('bcc:alertplayer', person.src, alert.message, alert.messageTime, job, alert.hash,
+                    TriggerClientEvent('lxr:alertplayer', person.src, alert.message, alert.messageTime, job, alert.hash,
                         pos.x, pos.y, pos.z, alert.icon, alert.radius, alert.blipTime) -- send alert to job
                 end
             end
@@ -66,7 +80,15 @@ function AddUserToAlerts(_source, job, jobgrade)
     local jg = jobgrade
 
     if job == nil or jobgrade == nil then
-        local User = VorpCore.getUser(_source).getUsedCharacter
+        local User = 
+    if Framework == 'lxr-core' then
+        return CoreObject.Functions.GetPlayerData
+    elseif Framework == 'qbr-core' then
+        return CoreObject.Functions.GetPlayerData
+    elseif Framework == 'rsg-core' then
+        return CoreObject.Functions.GetPlayerData
+    end
+    (_source).getUsedCharacter
         j = User.job
         jg = User.jobGrade
     end
@@ -81,7 +103,15 @@ function AddUserToAlerts(_source, job, jobgrade)
 end
 
 function RemoveUserFromAlert(_source)
-    local User = VorpCore.getUser(_source).getUsedCharacter
+    local User = 
+    if Framework == 'lxr-core' then
+        return CoreObject.Functions.GetPlayerData
+    elseif Framework == 'qbr-core' then
+        return CoreObject.Functions.GetPlayerData
+    elseif Framework == 'rsg-core' then
+        return CoreObject.Functions.GetPlayerData
+    end
+    (_source).getUsedCharacter
 
     if AlertsGroups[User.job] and AlertsGroups[User.job][tostring(User.jobGrade)] then
         AlertsGroups[User.job][tostring(User.jobGrade)][tostring(_source)] = nil
